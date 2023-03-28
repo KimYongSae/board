@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<!-- mapper 최상위 태그의 namespace는 관례상, Mapper 인터페이스의 FQCN으로 지정 -->
+<mapper namespace="org.zerock.myapp.mapper.BoardMapper">
+<!-- <mapper namespace="Mapper_1"> -->
+
+    <!-- 각각의 SQL문장을 저장하는 태그의 id속성값은 위 namespace에 지정한 mapper에 속한 메소드명으로 지정하는게 관례입니다. -->
+    <select id="selectAllBoards" resultType="org.zerock.myapp.domain.BoardVO">
+    <!-- <select id="SQL_1" resultType="org.zerock.myapp.domain.BoardVO"> -->
+        <![CDATA[Select /*+ index_desc(tbl_board) */ * from tbl_board where bno > 0]]>
+
+    </select>
+    <select id="selectBoard" resultType="org.zerock.myapp.domain.BoardVO">
+    <!-- <select id="SQL_2" resultType="org.zerock.myapp.domain.BoardVO"> -->
+        <![CDATA[SELECT * FROM tbl_board WHERE bno = #{bno}]]>
+    </select>
+
+    <select id="selectBoardRange" resultType="org.zerock.myapp.domain.BoardVO">
+    <!-- <select id="SQL_3" resultType="org.zerock.myapp.domain.BoardVO"> -->
+        <![CDATA[SELECT * FROM tbl_board WHERE bno BETWEEN #{startBno} AND #{endBno}]]>
+    </select>
+
+    <select id="findBoardsByBno" resultType="org.zerock.myapp.domain.BoardVO">
+        SELECT * FROM tbl_board WHERE
+        <!-- 마이바티스의 if 태그가 자동으로 where 키워드까지는 만들어내지 못함 -->
+        <if test="bno != null">
+            bno = #{bno}
+        </if>
+    </select>
+
+    <select id="findBoardsByTitle" resultType="org.zerock.myapp.domain.BoardVO">
+        SELECT * FROM tbl_board
+        <where>
+            <if test="title != null">
+                title LIKE '%'||#{title}||'%'
+            </if>
+        </where>
+    </select>
+
+    <select id="findBoardsByBnoOrTitle" resultType="org.zerock.myapp.domain.BoardVO">
+        SELECT * FROM tbl_board
+        <where>
+            <if test="bno != null">
+                bno = #{bno}
+            </if>
+            <choose>
+                <when test="title != null">
+                    AND title LIKE '%'||#{title}||'%'
+                </when>
+            </choose>
+        </where>
+    </select>
+
+    <insert id="insertBoard">
+        INSERT INTO tbl_board(title, content, writer)
+        values (#{title}, #{content}, #{writer})
+    </insert>
+
+
+</mapper>

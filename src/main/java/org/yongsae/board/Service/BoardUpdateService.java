@@ -1,0 +1,38 @@
+package org.yongsae.board.Service;
+
+
+import javax.servlet.ServletException;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+
+import org.yongsae.board.persistence.BoardDAO;
+
+import lombok.NoArgsConstructor;
+import lombok.extern.log4j.Log4j2;
+
+
+@NoArgsConstructor
+@Log4j2
+public class BoardUpdateService implements Service {
+	private BoardDAO dao;
+	@Override
+	public void process(HttpServletRequest request, HttpServletResponse response) throws Exception{
+		log.trace("process invoked.");
+		
+		try {
+			
+		this.dao = new BoardDAO();
+			
+		String num = request.getParameter("num");
+		String title = request.getParameter("title");
+		String author = request.getParameter("author");
+		String content = request.getParameter("content");
+		
+		dao.update(num, title, author, content);
+		
+		} catch (Exception e ) {
+			throw new ServletException(e);
+		}
+	}
+
+}
